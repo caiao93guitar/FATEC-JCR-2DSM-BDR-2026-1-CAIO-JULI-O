@@ -1,0 +1,24 @@
+CREATE OR REPLACE PROCEDURE atualizar_paginas_livro(
+    p_id_livro INT,
+    p_novas_paginas INT
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- Regra de validação
+    IF p_novas_paginas <= 10 THEN
+        RAISE EXCEPTION 'Erro: número de páginas deve ser maior que 10. Valor informado: %', p_novas_paginas;
+    END IF;
+
+    -- Atualiza o livro
+    UPDATE livro
+    SET paginas = p_novas_paginas
+    WHERE id_livro = p_id_livro;
+
+    -- Opcional: verificar se o livro existe
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Erro: livro com id % não encontrado.', p_id_livro;
+    END IF;
+
+END;
+$$;
